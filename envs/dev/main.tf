@@ -29,6 +29,15 @@ module "vpc" {
   map_public_ip_on_launch = true
 }
 
+# Secret applicatif dans AWS Parameter Store
+resource "aws_ssm_parameter" "db_password" {
+  name = "/novasphere/${var.environment}/db_password"
+  type = "SecureString"
+
+  value_wo         = var.db_password
+  value_wo_version = 1
+}
+
 # Security Group de l'ALB
 resource "aws_security_group" "alb" {
   name        = "novasphere-${var.environment}-alb"
@@ -73,7 +82,7 @@ resource "aws_security_group" "web" {
   }
 }
 
-# Modele utilise par l'Auto Scaling Group
+# Launch Template
 resource "aws_launch_template" "web" {
   name_prefix = "novasphere-${var.environment}-"
 
@@ -81,7 +90,11 @@ resource "aws_launch_template" "web" {
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.web.id]
 
-  # replace() evite les problemes CRLF du fichier cree sous Windows
+  # Profil IAM deja fourni par AWS Academy
+  iam_instance_profile {
+    name = "LabInstanceProfile"
+  }
+
   user_data = base64encode(
     replace(file("${path.module}/bootstrap.sh"), "\r\n", "\n")
   )
@@ -104,7 +117,7 @@ resource "aws_lb" "web" {
   security_groups = [aws_security_group.alb.id]
 }
 
-# Groupe de cibles
+# Target Group
 resource "aws_lb_target_group" "web" {
   name     = "novasphere-${var.environment}-web"
   port     = 80

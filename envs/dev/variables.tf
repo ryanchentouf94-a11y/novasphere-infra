@@ -24,3 +24,10 @@ variable "instance_type" {
   type        = string
   default     = "t3.micro"
 }
+
+variable "db_password" {
+  description = "Mot de passe applicatif fourni par TF_VAR_db_password"
+  type        = string
+  ephemeral   = true
+  sensitive   = true
+}
