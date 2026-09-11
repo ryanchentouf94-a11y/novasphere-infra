@@ -5,7 +5,7 @@ variable "aws_region" {
 }
 
 variable "owner" {
-  description = "Trigramme de l'etudiant, utilise pour nommer et tagger les ressources"
+  description = "Trigramme de l'etudiant"
   type        = string
 
   validation {
@@ -23,10 +23,4 @@ variable "instance_type" {
   description = "Type d'instance EC2"
   type        = string
   default     = "t3.micro"
-}
-
-variable "ssh_public_key_path" {
-  description = "Chemin vers la cle publique SSH"
-  type        = string
-  default     = "~/.ssh/novasphere.pub"
 }
