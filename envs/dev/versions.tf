@@ -17,14 +17,6 @@ terraform {
       version = "~> 2.5"
     }
   }
-
-  backend "s3" {
-    bucket       = "novasphere-tfstate-rch-588859219682"
-    key          = "novasphere/terraform.tfstate"
-    region       = "us-east-1"
-    encrypt      = true
-    use_lockfile = true
-  }
 }
 
 provider "aws" {
@@ -32,9 +24,10 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Project   = "NovaSphere"
-      ManagedBy = "Terraform"
-      Owner     = var.owner
+      Project     = "NovaSphere"
+      ManagedBy   = "Terraform"
+      Owner       = var.owner
+      Environment = var.environment
     }
   }
 }
